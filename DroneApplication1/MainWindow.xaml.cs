@@ -8,11 +8,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextBox = System.Windows.Forms.TextBox;
 
 namespace DroneApplication1
 {
@@ -25,9 +27,7 @@ namespace DroneApplication1
         {
 
             InitializeComponent();
-            RegularServiceListView.ItemSelectionChanged += RegularServiceListView_ItemSelectionChanged;
-            ExpressServiceListView.ItemSelectionChanged += ExpressServiceListView_ItemSelectionChanged;
-            listBox1.MouseDoubleClick += listBox1_MouseDoubleClick;
+
 
         }
 
@@ -42,29 +42,49 @@ namespace DroneApplication1
             problemtxt.Clear();
             costtxt.Clear();
         }
-        private void costtxt_KeyPress(object sender, KeyPressEventArgs e)
+        private void costtxt_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             // Check if input is a digit or decimal point
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            if (!char.IsControl(e.Text[0]) && !char.IsDigit(e.Text[0]) && (e.Text[0] != '.'))
             {
                 e.Handled = true;
             }
 
             // Check if input is already a decimal point
-            if ((e.KeyChar == '.') && (((TextBox)sender).Text.IndexOf('.') > -1))
+            if ((e.Text[0] == '.') && (((TextBox)sender).Text.IndexOf('.') > -1))
             {
                 e.Handled = true;
             }
         }
 
-        private void Add_Click(object sender, EventArgs e)
+        private void IncrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(serviceTag.Text, out int value))
+            {
+                serviceTag.Text = (value + 10).ToString();
+            }
+        }
+
+        private void DecrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(serviceTag.Text, out int value))
+            {
+                serviceTag.Text = (value - 10).ToString();
+            }
+        }
+
+        private System.Windows.Controls.TextBox GetServiceTag()
+        {
+            return serviceTag;
+        }
+
+        private void Add_Click(object sender, EventArgs e, System.Windows.Controls.TextBox serviceTag)
         {
             // Get values from textboxes
             string clientName = nametxt.Text;
             string droneModel = modeltxt.Text;
             string serviceProblem = problemtxt.Text;
             double serviceCost = Convert.ToDouble(costtxt.Text);
-            int serviceTag1 = (int)serviceTag.Value;
 
             // Get service priority from radio buttons
             string servicePriority = GetServicePriority();
@@ -72,6 +92,7 @@ namespace DroneApplication1
             // Increment service tag
             IncrementServiceTag();
 
+            int serviceTag1 = int.Parse(serviceTag.Text);
             // Create new Drone object with input values
             Drone newDrone = new Drone(serviceTag1, clientName, droneModel, serviceProblem, serviceCost);
 
@@ -97,11 +118,11 @@ namespace DroneApplication1
         // GetServicePriority custom method
         private string GetServicePriority()
         {
-            if (Regular.Checked)
+            if (Regular.IsChecked == true)
             {
                 return "Regular";
             }
-            else if (Express.Checked)
+            else if (Express.IsChecked == true)
             {
                 return "Express";
             }
@@ -111,15 +132,18 @@ namespace DroneApplication1
             }
         }
 
+
+
         // IncrementServiceTag custom method
         private void IncrementServiceTag()
         {
             // Get current service tag value
-            int currentValue = (int)serviceTag.Value;
+            int currentValue = int.Parse(serviceTag.Text);
 
             // Increment and set new value
-            serviceTag.Value = currentValue + 10;
+            serviceTag.Text = (currentValue + 10).ToString();
         }
+
 
         // DisplayRegularService custom method
         private void DisplayRegularService()
@@ -130,7 +154,7 @@ namespace DroneApplication1
             // Add service items to list view
             foreach (Drone drone in RegularService)
             {
-                ListViewItem item = new ListViewItem(drone.ServiceTag.ToString());
+                System.Windows.Forms.ListViewItem item = new System.Windows.Forms.ListViewItem(drone.ServiceTag.ToString());
                 item.SubItems.Add(drone.ClientName);
                 item.SubItems.Add(drone.DroneModel);
                 item.SubItems.Add(drone.ServiceCost.ToString("C"));
@@ -146,7 +170,7 @@ namespace DroneApplication1
             // Add service items to list view
             foreach (Drone drone in ExpressService)
             {
-                ListViewItem item = new ListViewItem(drone.ServiceTag.ToString());
+                System.Windows.Forms.ListViewItem item = new System.Windows.Forms.ListViewItem(drone.ServiceTag.ToString());
                 item.SubItems.Add(drone.ClientName);
                 item.SubItems.Add(drone.DroneModel);
                 item.SubItems.Add(drone.ServiceCost.ToString("C"));
@@ -154,13 +178,19 @@ namespace DroneApplication1
                 ExpressServiceListView.Items.Add(item);
             }
         }
-        private void RegularServiceListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+
+        private System.Windows.Controls.ListView GetRegularServiceListView()
+        {
+            return RegularServiceListView;
+        }
+
+        private void RegularServiceListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e, System.Windows.Controls.ListView regularServiceListView)
         {
             // Check if an item is selected
             if (RegularServiceListView.SelectedItems.Count > 0)
             {
                 // Get the selected item
-                ListViewItem selectedItem = RegularServiceListView.SelectedItems[0];
+                System.Windows.Forms.ListViewItem selectedItem = (System.Windows.Forms.ListViewItem)RegularServiceListView.SelectedItems[0];
 
                 // Get the client name and service problem from the selected item
                 string clientName = selectedItem.SubItems[1].Text;
@@ -180,7 +210,7 @@ namespace DroneApplication1
             if (ExpressServiceListView.SelectedItems.Count > 0)
             {
                 // Get the selected item
-                ListViewItem selectedItem = ExpressServiceListView.SelectedItems[0];
+                System.Windows.Forms.ListViewItem selectedItem = (System.Windows.Forms.ListViewItem)ExpressServiceListView.SelectedItems[0];
 
                 // Get the client name and service problem from the selected item
                 string clientName = selectedItem.SubItems[1].Text;
@@ -199,7 +229,7 @@ namespace DroneApplication1
             if (RegularServiceListView.SelectedItems.Count > 0)
             {
                 // Get the selected item
-                ListViewItem selectedItem = RegularServiceListView.SelectedItems[0];
+                System.Windows.Forms.ListViewItem selectedItem = (System.Windows.Forms.ListViewItem)ExpressServiceListView.SelectedItems[0];
 
                 // Get the service tag from the selected item
                 int serviceTag = int.Parse(selectedItem.SubItems[0].Text);
@@ -219,7 +249,7 @@ namespace DroneApplication1
             if (ExpressServiceListView.SelectedItems.Count > 0)
             {
                 // Get the selected item
-                ListViewItem selectedItem = ExpressServiceListView.SelectedItems[0];
+                System.Windows.Forms.ListViewItem selectedItem = (System.Windows.Forms.ListViewItem)ExpressServiceListView.SelectedItems[0];
 
                 // Get the service tag from the selected item
                 int serviceTag = int.Parse(selectedItem.SubItems[0].Text);
@@ -245,7 +275,7 @@ namespace DroneApplication1
             ClearTextBoxes();
         }
 
-        private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void listBox1_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (listBox1.SelectedItem != null)
             {
@@ -264,5 +294,7 @@ namespace DroneApplication1
                 }
             }
         }
+
+       
     }
 }

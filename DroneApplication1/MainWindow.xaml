@@ -1,7 +1,9 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:DroneApplication1" xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="MainWindow.xaml.cs"
+        xmlns:local="clr-namespace:DroneApplication1" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+
+xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="DroneApplication1.MainWindow"
         Title="Drone Service Application" Height="1000" Width="1871"
         >
 
@@ -46,11 +48,11 @@
 
         <Label Grid.Column="2" Grid.Row="0" Content="Finished Service Items" FontSize="18" FontWeight="Bold" Margin="157,5,-20,6" />
         <ListBox x:Name="listBox1" Grid.Column="2" av:ItemsSource="{av:SampleData ItemCount=5}" Margin="166,13,75,214" Grid.Row="1"/>
-        <Label Grid.Row="0" Content="RegularService" FontSize="18" FontWeight="Bold" Margin="15,8,2,2" />
+        <Label Grid.Row="0" Content="RegularService" FontSize="18" FontWeight="Bold" Margin="22,13,81,936" Grid.RowSpan="2" />
         <GroupBox x:Name="groupBox" Header="Service Pirioty" Grid.Row="1" Margin="20,763,426,106" Cursor="">
             <StackPanel Orientation="Horizontal" Height="55" Margin="-1,0,1,0">
-                <RadioButton Content="Express" GroupName="{Binding ElementName=groupBox, Mode=OneWay}"/>
-                <RadioButton Content="Regular" Margin="17,0,51,0" VerticalAlignment="Top" GroupName="{Binding ElementName=groupBox, Mode=OneWay}"/>
+                <RadioButton x:Name="Express" Content="Express" GroupName="{Binding ElementName=groupBox, Mode=OneWay}" IsChecked="False"/>
+                <RadioButton x:Name="Regular" Content="Regular" Margin="17,0,51,0" VerticalAlignment="Top" GroupName="{Binding ElementName=groupBox, Mode=OneWay}"/>
 
             </StackPanel>
         </GroupBox>
@@ -60,10 +62,33 @@
         <Label Content="Service Problem" HorizontalAlignment="Left" Margin="481,682,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26" Width="95"/>
         <TextBox x:Name="nametxt" HorizontalAlignment="Left" Margin="329,720,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="125" RenderTransformOrigin="0.25,-0.309" Height="18"/>
         <TextBox x:Name="modeltxt" HorizontalAlignment="Left" Margin="330,771,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="123" RenderTransformOrigin="0.25,-0.309" Height="18"/>
-        <TextBox x:Name="costtxt" HorizontalAlignment="Left" Margin="329,816,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="125" RenderTransformOrigin="0.25,-0.309" Height="18"/>
+        <TextBox x:Name="costtxt" HorizontalAlignment="Left" Margin="329,816,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="125" RenderTransformOrigin="0.25,-0.309" Height="18" PreviewTextInput="costtxt_PreviewTextInput"/>
         <TextBox x:Name="problemtxt" HorizontalAlignment="Center" Margin="0,719,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="258" RenderTransformOrigin="0.25,-0.309" Grid.ColumnSpan="2" Height="157"/>
         <Button x:Name="Add" Grid.Column="1" Content="ADD" HorizontalAlignment="Left" Margin="174,714,0,0" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="42"/>
         <Button x:Name="Delete" Grid.Column="1" Content="DELETE" HorizontalAlignment="Left" Margin="175,794,0,0" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="42"/>
+
+        <Grid Margin="461,715,6,179" Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <Button x:Name="DecrementButton" Content="-" Click="DecrementButton_Click" Width="38" />
+                <Button x:Name="IncrementButton" Content="+" Click="IncrementButton_Click" Width="41" RenderTransformOrigin="0.5,0.5" >
+                    <Button.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="-1" ScaleY="1.001"/>
+                            <SkewTransform AngleY="-2.536" AngleX="-2.36"/>
+                            <RotateTransform/>
+                            <TranslateTransform Y="0.866" X="0.931"/>
+                        </TransformGroup>
+                    </Button.RenderTransform>
+                </Button>
+            </StackPanel>
+            
+        </Grid>
+        <TextBox x:Name="serviceTag" Grid.Column="1" Text="0" Margin="408,716,90,178" Grid.Row="1" />
+
     </Grid>
 </Window>
 
