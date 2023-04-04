@@ -20,16 +20,17 @@ xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://s
 
         <Label Grid.Column="1" Grid.Row="0" Content="" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,1" Width="10" />
 
-        <ListView Grid.Column="0" Grid.Row="1" Margin="15,17,559,0" x:Name="RegularServiceListView" Height="588" VerticalAlignment="Top" Grid.ColumnSpan="2">
+        <ListView Grid.Column="0" Grid.Row="1" Margin="15,17,559,0" x:Name="RegularServiceListView" Height="588" VerticalAlignment="Top" Grid.ColumnSpan="2" SelectionChanged="RegularServiceListView_SelectionChanged">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ServiceTag" Width="130" DisplayMemberBinding="{Binding ServiceTag}" />
+                    <GridViewColumn Header="ServiceTag" Width="130" DisplayMemberBinding="{Binding serviceTag}" />
                     <GridViewColumn Header="Names" Width="150" DisplayMemberBinding="{Binding Names}" />
                     <GridViewColumn Header="Models" Width="150" DisplayMemberBinding="{Binding Models}" />
                     <GridViewColumn Header="Costs" Width="150" DisplayMemberBinding="{Binding Costs}" />
                     <GridViewColumn Header="problem" Width="70" DisplayMemberBinding="{Binding Problem}" />
                 </GridView>
             </ListView.View>
+           
         </ListView>
 
         <Label Grid.Column="1" Content="ExpressService" FontSize="18" FontWeight="Bold" Margin="68,7,532,4" Grid.ColumnSpan="2" />
@@ -37,7 +38,7 @@ xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://s
         <ListView Grid.Column="1" Grid.Row="1" Margin="76,16,482,0" x:Name="ExpressServiceListView" Height="589" VerticalAlignment="Top" Grid.ColumnSpan="2">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ServiceTag" Width="130" DisplayMemberBinding="{Binding ServiceTag}" />
+                    <GridViewColumn Header="ServiceTag" Width="130" DisplayMemberBinding="{Binding serviceTag}" />
                     <GridViewColumn Header="Names" Width="150" DisplayMemberBinding="{Binding Names}" />
                     <GridViewColumn Header="Models" Width="150" DisplayMemberBinding="{Binding Models}" />
                     <GridViewColumn Header="Costs" Width="150" DisplayMemberBinding="{Binding Costs}" />
@@ -48,7 +49,7 @@ xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://s
 
         <Label Grid.Column="2" Grid.Row="0" Content="Finished Service Items" FontSize="18" FontWeight="Bold" Margin="157,5,-20,6" />
         <ListBox x:Name="listBox1" Grid.Column="2" av:ItemsSource="{av:SampleData ItemCount=5}" Margin="166,13,75,214" Grid.Row="1"/>
-        <Label Grid.Row="0" Content="RegularService" FontSize="18" FontWeight="Bold" Margin="22,13,81,936" Grid.RowSpan="2" />
+        <Label Grid.Row="0" Content="RegularService" FontSize="18" FontWeight="Bold" Margin="12,5,91,5" />
         <GroupBox x:Name="groupBox" Header="Service Pirioty" Grid.Row="1" Margin="20,763,426,106" Cursor="">
             <StackPanel Orientation="Horizontal" Height="55" Margin="-1,0,1,0">
                 <RadioButton x:Name="Express" Content="Express" GroupName="{Binding ElementName=groupBox, Mode=OneWay}" IsChecked="False"/>
@@ -64,8 +65,8 @@ xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://s
         <TextBox x:Name="modeltxt" HorizontalAlignment="Left" Margin="330,771,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="123" RenderTransformOrigin="0.25,-0.309" Height="18"/>
         <TextBox x:Name="costtxt" HorizontalAlignment="Left" Margin="329,816,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="125" RenderTransformOrigin="0.25,-0.309" Height="18" PreviewTextInput="costtxt_PreviewTextInput"/>
         <TextBox x:Name="problemtxt" HorizontalAlignment="Center" Margin="0,719,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="258" RenderTransformOrigin="0.25,-0.309" Grid.ColumnSpan="2" Height="157"/>
-        <Button x:Name="Add" Grid.Column="1" Content="ADD" HorizontalAlignment="Left" Margin="174,714,0,0" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="42"/>
-        <Button x:Name="Delete" Grid.Column="1" Content="DELETE" HorizontalAlignment="Left" Margin="175,794,0,0" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="42"/>
+        <Button x:Name="Add" Grid.Column="1" Content="ADD" HorizontalAlignment="Left" Margin="174,714,0,0" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="42" Click="Add_Click"/>
+        <Button x:Name="Delete" Grid.Column="1" Content="DELETE" HorizontalAlignment="Left" Margin="175,794,0,0" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="42" Click="Delete_Click"/>
 
         <Grid Margin="461,715,6,179" Grid.Row="1" Grid.Column="1">
             <Grid.ColumnDefinitions>
@@ -85,7 +86,7 @@ xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://s
                     </Button.RenderTransform>
                 </Button>
             </StackPanel>
-            
+
         </Grid>
         <TextBox x:Name="serviceTag" Grid.Column="1" Text="0" Margin="408,716,90,178" Grid.Row="1" />
 

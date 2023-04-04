@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -27,7 +28,7 @@ namespace DroneApplication1
         {
 
             InitializeComponent();
-
+            RegularServiceListView.SelectionChanged += RegularServiceListView_SelectionChanged;
 
         }
 
@@ -78,7 +79,7 @@ namespace DroneApplication1
             return serviceTag;
         }
 
-        private void Add_Click(object sender, EventArgs e, System.Windows.Controls.TextBox serviceTag)
+        private void Add_Click(object sender, RoutedEventArgs e)
         {
             // Get values from textboxes
             string clientName = nametxt.Text;
@@ -145,7 +146,7 @@ namespace DroneApplication1
         }
 
 
-        // DisplayRegularService custom method
+        
         private void DisplayRegularService()
         {
             // Clear list view items
@@ -154,27 +155,40 @@ namespace DroneApplication1
             // Add service items to list view
             foreach (Drone drone in RegularService)
             {
-                System.Windows.Forms.ListViewItem item = new System.Windows.Forms.ListViewItem(drone.ServiceTag.ToString());
-                item.SubItems.Add(drone.ClientName);
-                item.SubItems.Add(drone.DroneModel);
-                item.SubItems.Add(drone.ServiceCost.ToString("C"));
-                item.SubItems.Add(drone.ServiceProblem);
+                // Create an object of a class that contains properties corresponding to each column in the ListView
+                var item = new
+                {
+                    serviceTag = drone.ServiceTag.ToString(),
+                    Names = drone.ClientName,
+                    Models = drone.DroneModel,
+                    Costs = drone.ServiceCost.ToString("C"),
+                    Problem = drone.ServiceProblem
+                };
+
+                // Add the object to the list 
                 RegularServiceListView.Items.Add(item);
             }
         }
+
+
+
         private void DisplayExpressService()
         {
-            // Clear list view items
             ExpressServiceListView.Items.Clear();
-
-            // Add service items to list view
+            // Clear list view items
             foreach (Drone drone in ExpressService)
             {
-                System.Windows.Forms.ListViewItem item = new System.Windows.Forms.ListViewItem(drone.ServiceTag.ToString());
-                item.SubItems.Add(drone.ClientName);
-                item.SubItems.Add(drone.DroneModel);
-                item.SubItems.Add(drone.ServiceCost.ToString("C"));
-                item.SubItems.Add(drone.ServiceProblem);
+                // Create an object of a class that contains properties corresponding to each column in the ListView
+                var item = new
+                {
+                    serviceTag = drone.ServiceTag.ToString(),
+                    Names = drone.ClientName,
+                    Models = drone.DroneModel,
+                    Costs = drone.ServiceCost.ToString("C"),
+                    Problem = drone.ServiceProblem
+                };
+
+                // Add the object to the list 
                 ExpressServiceListView.Items.Add(item);
             }
         }
@@ -184,23 +198,23 @@ namespace DroneApplication1
             return RegularServiceListView;
         }
 
-        private void RegularServiceListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e, System.Windows.Controls.ListView regularServiceListView)
+        private void RegularServiceListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Check if an item is selected
             if (RegularServiceListView.SelectedItems.Count > 0)
             {
                 // Get the selected item
-                System.Windows.Forms.ListViewItem selectedItem = (System.Windows.Forms.ListViewItem)RegularServiceListView.SelectedItems[0];
+                var selectedItem = RegularServiceListView.SelectedItem as Drone;
 
                 // Get the client name and service problem from the selected item
-                string clientName = selectedItem.SubItems[1].Text;
-                string serviceProblem = selectedItem.SubItems[4].Text;
+                string clientName = selectedItem.ClientName;
+                string serviceProblem = selectedItem.ServiceProblem;
 
                 // Display the client name and service problem in the related textboxes
                 nametxt.Text = clientName;
                 problemtxt.Text = serviceProblem;
             }
         }
+
 
 
 
@@ -210,11 +224,11 @@ namespace DroneApplication1
             if (ExpressServiceListView.SelectedItems.Count > 0)
             {
                 // Get the selected item
-                System.Windows.Forms.ListViewItem selectedItem = (System.Windows.Forms.ListViewItem)ExpressServiceListView.SelectedItems[0];
+                var selectedItem = ExpressServiceListView.SelectedItems[0] as Drone;
 
                 // Get the client name and service problem from the selected item
-                string clientName = selectedItem.SubItems[1].Text;
-                string serviceProblem = selectedItem.SubItems[4].Text;
+                string clientName = selectedItem.ClientName;
+                string serviceProblem = selectedItem.ServiceProblem;
 
                 // Display the client name and service problem in the related textboxes
                 nametxt.Text = clientName;
@@ -224,7 +238,7 @@ namespace DroneApplication1
 
         }
 
-        private void Delete_Click(object sender, EventArgs e)
+        private void Delete_Click(object sender, RoutedEventArgs e)
         {
             if (RegularServiceListView.SelectedItems.Count > 0)
             {
