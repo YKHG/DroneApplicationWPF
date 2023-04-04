@@ -29,7 +29,7 @@ namespace DroneApplication1
 
             InitializeComponent();
             RegularServiceListView.SelectionChanged += RegularServiceListView_SelectionChanged;
-
+            ExpressServiceListView.SelectionChanged += ExpressServiceListView_SelectionChanged;
         }
 
         List<Drone> FinishedList = new List<Drone>();
@@ -43,6 +43,7 @@ namespace DroneApplication1
             problemtxt.Clear();
             costtxt.Clear();
         }
+
         private void costtxt_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             // Check if input is a digit or decimal point
@@ -81,6 +82,8 @@ namespace DroneApplication1
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
+
+
             // Get values from textboxes
             string clientName = nametxt.Text;
             string droneModel = modeltxt.Text;
@@ -89,11 +92,17 @@ namespace DroneApplication1
 
             // Get service priority from radio buttons
             string servicePriority = GetServicePriority();
-
+            int serviceTag1 = int.Parse(serviceTag.Text);
+            // Check if the service tag is within the valid range
+            if ( serviceTag1 < 100 || serviceTag1 > 900)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("Service Tag should be between 100 and 900");
+                return;
+            }
             // Increment service tag
             IncrementServiceTag();
 
-            int serviceTag1 = int.Parse(serviceTag.Text);
+            
             // Create new Drone object with input values
             Drone newDrone = new Drone(serviceTag1, clientName, droneModel, serviceProblem, serviceCost);
 
@@ -200,14 +209,15 @@ namespace DroneApplication1
 
         private void RegularServiceListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Check if an item is selected
             if (RegularServiceListView.SelectedItems.Count > 0)
             {
                 // Get the selected item
-                var selectedItem = RegularServiceListView.SelectedItem as Drone;
+                var selectedItem = (dynamic)RegularServiceListView.SelectedItems[0];
 
                 // Get the client name and service problem from the selected item
-                string clientName = selectedItem.ClientName;
-                string serviceProblem = selectedItem.ServiceProblem;
+                string clientName = selectedItem.Names;
+                string serviceProblem = selectedItem.Problem;
 
                 // Display the client name and service problem in the related textboxes
                 nametxt.Text = clientName;
@@ -219,16 +229,17 @@ namespace DroneApplication1
 
 
 
-        private void ExpressServiceListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void ExpressServiceListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Check if an item is selected
             if (ExpressServiceListView.SelectedItems.Count > 0)
             {
                 // Get the selected item
-                var selectedItem = ExpressServiceListView.SelectedItems[0] as Drone;
+                var selectedItem = (dynamic)ExpressServiceListView.SelectedItems[0];
 
                 // Get the client name and service problem from the selected item
-                string clientName = selectedItem.ClientName;
-                string serviceProblem = selectedItem.ServiceProblem;
+                string clientName = selectedItem.Names;
+                string serviceProblem = selectedItem.Problem;
 
                 // Display the client name and service problem in the related textboxes
                 nametxt.Text = clientName;
@@ -238,58 +249,59 @@ namespace DroneApplication1
 
         }
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            if (RegularServiceListView.SelectedItems.Count > 0)
+        
+        
+            private void Delete_Click(object sender, RoutedEventArgs e)
             {
-                // Get the selected item
-                System.Windows.Forms.ListViewItem selectedItem = (System.Windows.Forms.ListViewItem)ExpressServiceListView.SelectedItems[0];
+                if (RegularServiceListView.SelectedItems.Count > 0)
+                {
+                    // Get the selected item
+                    var selectedItem = RegularServiceListView.SelectedItem as Drone;
 
-                // Get the service tag from the selected item
-                int serviceTag = int.Parse(selectedItem.SubItems[0].Text);
+                    // Dequeue the corresponding drone from the RegularService queue
+                    Drone completedDrone = RegularService.Dequeue();
 
-                // Dequeue the corresponding drone from the RegularService queue
-                Drone completedDrone = RegularService.Dequeue();
+                    // Add the completed drone to the FinishedList
+                    FinishedList.Add(completedDrone);
 
-                // Add the completed drone to the FinishedList
-                FinishedList.Add(completedDrone);
+                    // Remove the selected item from the Regular ListView
+                    RegularServiceListView.Items.Remove(selectedItem);
 
-                // Remove the selected item from the Regular ListView
-                RegularServiceListView.Items.Remove(selectedItem);
-
-                // Display the finished drone in the FinishedListBox
+                    // Display the finished drone in the FinishedListBox
+                    
                 listBox1.Items.Add($"Client Name: {completedDrone.ClientName} - Service Cost: {completedDrone.ServiceCost.ToString("C")}");
+                // Update the list view
+                DisplayRegularService();
             }
-            if (ExpressServiceListView.SelectedItems.Count > 0)
-            {
-                // Get the selected item
-                System.Windows.Forms.ListViewItem selectedItem = (System.Windows.Forms.ListViewItem)ExpressServiceListView.SelectedItems[0];
+                if (ExpressServiceListView.SelectedItems.Count > 0)
+                {
+                    // Get the selected item
+                    var selectedItem = ExpressServiceListView.SelectedItem as Drone;
 
-                // Get the service tag from the selected item
-                int serviceTag = int.Parse(selectedItem.SubItems[0].Text);
+                    // Dequeue the corresponding drone from the RegularService queue
+                    Drone completedDrone = ExpressService.Dequeue();
 
-                // Dequeue the corresponding drone from the RegularService queue
-                Drone completedDrone = ExpressService.Dequeue();
+                    // Add the completed drone to the FinishedList
+                    FinishedList.Add(completedDrone);
 
-                // Add the completed drone to the FinishedList
-                FinishedList.Add(completedDrone);
+                    // Remove the selected item from the express ListView
+                    ExpressServiceListView.Items.Remove(selectedItem);
 
-                // Remove the selected item from the express ListView
-                ExpressServiceListView.Items.Remove(selectedItem);
-
-                // Display the finished drone in the FinishedListBox
-                listBox1.Items.Add($"Client Name: {completedDrone.ClientName} - Service Cost: {completedDrone.ServiceCost.ToString("C")}");
-
+                    // Display the finished drone in the FinishedListBox
+                    listBox1.Items.Add($"Client Name: {completedDrone.ClientName} - Service Cost: {completedDrone.ServiceCost.ToString("C")}");
+                // Update the list view
+                DisplayExpressService();
             }
 
-            // Update the list view
-            DisplayRegularService();
+  
 
-            // Clear the textboxes
-            ClearTextBoxes();
-        }
 
-        private void listBox1_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
+                // Clear the textboxes
+                ClearTextBoxes();
+            }
+
+
+        private void listBox1_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (listBox1.SelectedItem != null)
             {
@@ -309,6 +321,21 @@ namespace DroneApplication1
             }
         }
 
-       
+        private void serviceTag_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Check if the entered text is a number
+            if (!int.TryParse(e.Text, out int result))
+            {
+                e.Handled = true; // Ignore non-numeric input
+                return;
+            }
+
+            // Check if the entered number exceeds the maximum value
+            int currentValue = int.Parse(serviceTag.Text + e.Text);
+            if (currentValue > 900)
+            {
+                e.Handled = true; // Ignore input that exceeds the limit
+            }
+        }
     }
 }

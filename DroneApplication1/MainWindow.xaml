@@ -35,7 +35,7 @@ xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://s
 
         <Label Grid.Column="1" Content="ExpressService" FontSize="18" FontWeight="Bold" Margin="68,7,532,4" Grid.ColumnSpan="2" />
 
-        <ListView Grid.Column="1" Grid.Row="1" Margin="76,16,482,0" x:Name="ExpressServiceListView" Height="589" VerticalAlignment="Top" Grid.ColumnSpan="2">
+        <ListView Grid.Column="1" Grid.Row="1" Margin="76,16,482,0" x:Name="ExpressServiceListView" Height="589" VerticalAlignment="Top" Grid.ColumnSpan="2" SelectionChanged="ExpressServiceListView_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="ServiceTag" Width="130" DisplayMemberBinding="{Binding serviceTag}" />
@@ -48,7 +48,7 @@ xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://s
         </ListView>
 
         <Label Grid.Column="2" Grid.Row="0" Content="Finished Service Items" FontSize="18" FontWeight="Bold" Margin="157,5,-20,6" />
-        <ListBox x:Name="listBox1" Grid.Column="2" av:ItemsSource="{av:SampleData ItemCount=5}" Margin="166,13,75,214" Grid.Row="1"/>
+        <ListBox x:Name="listBox1" Grid.Column="2" av:ItemsSource="{av:SampleData ItemCount=5}" Margin="166,13,75,214" Grid.Row="1" MouseDoubleClick="listBox1_MouseDoubleClick"/>
         <Label Grid.Row="0" Content="RegularService" FontSize="18" FontWeight="Bold" Margin="12,5,91,5" />
         <GroupBox x:Name="groupBox" Header="Service Pirioty" Grid.Row="1" Margin="20,763,426,106" Cursor="">
             <StackPanel Orientation="Horizontal" Height="55" Margin="-1,0,1,0">
@@ -88,7 +88,7 @@ xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://s
             </StackPanel>
 
         </Grid>
-        <TextBox x:Name="serviceTag" Grid.Column="1" Text="0" Margin="408,716,90,178" Grid.Row="1" />
+        <TextBox x:Name="serviceTag" Grid.Column="1" Text="100" Margin="408,716,90,178" Grid.Row="1" UndoLimit="900" PreviewTextInput="serviceTag_PreviewTextInput" />
 
     </Grid>
 </Window>
