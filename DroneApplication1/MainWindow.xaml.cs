@@ -44,7 +44,7 @@ namespace DroneApplication1
             costtxt.Clear();
         }
 
-        private void costtxt_PreviewTextInput(object sender, TextCompositionEventArgs e)
+          private void costtxt_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             // Check if input is a digit or decimal point
             if (!char.IsControl(e.Text[0]) && !char.IsDigit(e.Text[0]) && (e.Text[0] != '.'))
@@ -53,9 +53,22 @@ namespace DroneApplication1
             }
 
             // Check if input is already a decimal point
-            if ((e.Text[0] == '.') && (((TextBox)sender).Text.IndexOf('.') > -1))
+            if ((e.Text[0] == '.') && (((System.Windows.Controls.TextBox)sender).Text.IndexOf('.') > -1))
             {
                 e.Handled = true;
+            }
+
+            // Check if input is a digit and there is already one decimal point in the textbox
+            if (char.IsDigit(e.Text[0]) && (((System.Windows.Controls.TextBox)sender).Text.IndexOf('.') > -1))
+            {
+                // Get the index of the decimal point in the textbox
+                int decimalIndex = ((System.Windows.Controls.TextBox)sender).Text.IndexOf('.');
+
+                // Check if there is already a decimal point and there is only one digit after it
+                if (((System.Windows.Controls.TextBox)sender).Text.Length - decimalIndex - 1 == 1)
+                {
+                    e.Handled = true;
+                }
             }
         }
 
@@ -82,7 +95,12 @@ namespace DroneApplication1
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-
+  // Check if any of the required textboxes are empty
+            if (string.IsNullOrEmpty(nametxt.Text) || string.IsNullOrEmpty(modeltxt.Text) || string.IsNullOrEmpty(problemtxt.Text) || string.IsNullOrEmpty(costtxt.Text))
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("Please fill in all required fields");
+                return;
+            }
 
             // Get values from textboxes
             string clientName = nametxt.Text;
